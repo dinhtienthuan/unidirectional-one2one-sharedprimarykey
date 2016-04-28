@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+  <context:component-scan base-package="com.dinhtienthuan" />
+
+  <bean id="hibernateDataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <property name="driverClassName" value="org.postgresql.Driver" />
+    <property name="jdbcUrl" value="jdbc:postgresql://192.168.1.10:5432/hibernate" />
+    <property name="username" value="timon" />
+    <property name="password" value="foobar" />
+  </bean>
+
+  <bean id="hibernateSessionFactory"
+    class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <property name="dataSource" ref="hibernateDataSource" />
+    <property name="packagesToScan">
+      <array>
+        <value>com.dinhtienthuan.entity</value>
+      </array>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.format_sql">true</prop>
+      </props>
+    </property>
+  </bean>
+
+  <tx:annotation-driven />
+  <bean id="hibernateTransactionManager"
+    class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="hibernateSessionFactory" />
+  </bean>
+</beans>
